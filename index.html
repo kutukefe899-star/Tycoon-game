@@ -68,7 +68,13 @@ em{font-style:normal;background:var(--bg);border-radius:8px;padding:1px 8px;font
 <button id="coin" aria-label="Para kazan"><span>₺</span></button>
 <p class="cl">Tık başına <b id="cv"></b></p>
 <div class="card"><h3>Yeniden doğuş</h3><p>Her şeyi sıfırla, hisse kazan. Her hisse tüm gelire kalıcı +%10 ekler.</p><div class="kv"><span>Hisselerin</span><b id="hs"></b></div><div class="kv"><span>Şimdi alacağın</span><b id="pg"></b></div><button id="pb" class="wide"></button></div>
-<div class="card"><h3>İstatistikler</h3><div id="st"></div><div class="ctl"><button id="sv">Kaydet</button><button id="rs">Sıfırla</button></div></div>
+<div class="card">
+  <h3>İstatistikler</h3>
+  <div id="st"></div>
+  <div class="ctl"><button id="sv">İndir (JSON)</button><button id="ld">Yükle</button></div>
+  <input type="file" id="fileInput" accept=".json" hidden>
+  <div style="margin-top:8px"><button id="rs" class="wide" style="background:#d9480f;color:#fff;border-color:transparent">Sıfırla</button></div>
+</div>
 </section>
 <section class="right" id="app">
 <nav class="tabs"><button class="tab on">İşletmeler</button><button class="tab">Yükseltme</button><button class="tab">Başarım</button><button class="tab">🌍 Liderlik</button></nav>
@@ -179,8 +185,48 @@ $("#app").addEventListener("click",e=>{const m=e.target.closest("[data-m]");if(m
 document.querySelectorAll(".tab").forEach((b,i,a)=>b.onclick=()=>{a.forEach((x,j)=>x.classList.toggle("on",i==j));[0,1,2,3].forEach(j=>$("#p"+j).hidden=j!=i);if(i==3){lbSend();lbLoad()}});
 $("#th").onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark"};
 $("#pb").onclick=()=>{const g=pg();if(g<1)return;if(!arm){arm=1;setTimeout(()=>arm=0,4000);return}S.h+=g;S.pr++;S.m=S.run=0;S.b=B.map(_=>0);S.k=K.map(_=>0);S.g=G.map(_=>0);arm=0;fr=0;toast("♻️ Yeniden doğuş! +"+g+" hisse")};
+
 const save=()=>{try{S.t=Date.now();localStorage.setItem("tycoon_v1",JSON.stringify(S))}catch(e){}};
-$("#sv").onclick=()=>{save();toast("Kaydedildi")};
+
+// "İndir (JSON)" butonu: Tarayıcı üzerinden cihazın İndirilenler/Documents klasörüne .json dosyası olarak kaydeder
+$("#sv").onclick=()=>{
+  save();
+  const dataStr="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(S,null,2));
+  const dlAnchor=$.createElement?document.createElement('a'):document.createElement('a');
+  dlAnchor.setAttribute("href",dataStr);
+  dlAnchor.setAttribute("download","tycoon_kayit_" + new Date().toISOString().slice(0,10) + ".json");
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
+  toast("💾 Kayıt dosyası indirildi!");
+};
+
+// "Yükle" butonu ve dosya okuma işlemleri
+const fileInput=$("#fileInput");
+$("#ld").onclick=()=>fileInput.click();
+fileInput.onchange=(e)=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(event)=>{
+    try{
+      const parsed=JSON.parse(event.target.result);
+      if(parsed && typeof parsed.m==="number"){
+        S=Object.assign(def(),parsed);
+        save();
+        toast("📂 Oyun başarıyla yüklendi!");
+        setTimeout(()=>location.reload(), 1000);
+      }else{
+        toast("❌ Geçersiz kayıt dosyası!");
+      }
+    }catch(err){
+      toast("❌ Dosya okunurken hata oluştu!");
+    }
+  };
+  reader.readAsText(file);
+  fileInput.value="";
+};
+
 $("#rs").onclick=function(){if(!ra){ra=1;this.textContent="Emin misin?";setTimeout(()=>{ra=0;this.textContent="Sıfırla"},3000);return}S=Object.assign(def(),{uid:S.uid,name:S.name,best:S.best});ra=0;fr=0;this.textContent="Sıfırla";save();toast("Oyun sıfırlandı")};
 setInterval(save,5000);addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>document.hidden&&save());
 const gd=$("#gold");
@@ -193,7 +239,7 @@ const c=cps(),f=fr-Date.now();
 T($("#m"),M(S.m));T($("#ps"),"+"+M(c)+"/sn");T($("#cv"),M(cv()));T($("#rk"),RK.filter(r=>S.tot>=r[0]).pop()[1]);
 $("#fr").hidden=f<=0;document.body.classList.toggle("frz",f>0);if(f>0)T($("#fr"),"🔥 Çılgınlık ×7: "+Math.ceil(f/1e3)+" sn");
 P0.querySelectorAll(".row").forEach((r,i)=>{const q=N(i),p=bc(i,q),o=S.b[i],x=MS.find(y=>y>o),l=MS.filter(y=>y<=o).pop()||0,[a,b]=r.querySelectorAll(".buy span");
-T(r.querySelector("em"),o);T(r.querySelector("small"),"Her biri "+M(B[i][3]*ms(i)*gm())+"/sn"+(x?", ×2 için "+x+" adet":", tam güç"));
+T(r.querySelector("em"),o);T(r.querySelector("small"),"Her biri "+M(B[i][3]*ms(i)*gm())+"/sn"+(x?", ×2 కోసం "+x+" adet":", tam güç"));
 r.querySelector("u").style.width=(x?(o-l)/(x-l)*100:100)+"%";T(a,mode==1?"Satın al":"×"+q);T(b,M(p));r.querySelector(".buy").disabled=S.m<p});
 P1.querySelectorAll(".row").forEach(r=>{const t=+r.dataset.t,i=+r.dataset.i,u=t?G[i]:K[i],d=t?S.g[i]:S.k[i],[a,b]=r.querySelectorAll(".buy span");
 T(a,d?"✓":"Satın al");T(b,d?"Alındı":M(u[2]));r.classList.toggle("done",!!d);r.querySelector(".buy").disabled=!!d||S.m<u[2]});
@@ -206,3 +252,4 @@ chk();stats();ui();sched();
 </script>
 </body>
 </html>
+/
