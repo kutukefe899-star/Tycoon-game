@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tycoon İmparatorluğu</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{--bg:#e4eedd;--card:#f6faf1;--ink:#12302a;--mut:#4f6b62;--acc:#8a5d00;--gold:#e6a817;--ok:#1d7a52;--line:#b9ceb9;--btn:#12453b;--btnt:#f6faf1;--tx:#12302a0e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#081a17;--card:#0f2a25;--ink:#e8f3ec;--mut:#8fb0a4;--acc:#f2c14e;--gold:#f2c14e;--ok:#5fd3a0;--line:#1d4a41;--btn:#f2c14e;--btnt:#1b1300;--tx:#ffffff09}}
+:root[data-theme="dark"]{--bg:#081a17;--card:#0f2a25;--ink:#e8f3ec;--mut:#8fb0a4;--acc:#f2c14e;--gold:#f2c14e;--ok:#5fd3a0;--line:#1d4a41;--btn:#f2c14e;--btnt:#1b1300;--tx:#ffffff09}
+body{margin:0;background:var(--bg) repeating-radial-gradient(circle at 15% 0,transparent 0 9px,var(--tx) 9px 10px) fixed;color:var(--ink);font:15px/1.4 ui-rounded,"SF Pro Rounded",system-ui,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--line)}
+.mrow{display:flex;align-items:center;gap:12px;max-width:1000px;margin:auto;padding:8px 14px}
+.mrow small,.cl,.kv span{color:var(--mut)}
+#m{font:800 clamp(28px,8vw,40px)/1.05 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--acc);font-variant-numeric:tabular-nums}
+.r{margin-left:auto;text-align:right}#ps{font-weight:700}
+.ib{border:1px solid var(--line);background:var(--card);border-radius:50%;width:38px;height:38px;font-size:18px}
+main{display:grid;gap:16px;padding:14px;max-width:1000px;margin:auto}
+@media(min-width:820px){main{grid-template-columns:360px 1fr;align-items:start}.left{position:sticky;top:86px}}
+h1{margin:4px 0 0;font:800 22px "Iowan Old Style","Palatino Linotype",Georgia,serif}
+h3{margin:14px 0 4px;font-size:15px}
+#coin{position:relative;display:block;margin:14px auto 6px;width:min(60vw,220px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:repeating-conic-gradient(#f7d56a 0 3deg,#b9820a 3deg 6deg);box-shadow:0 14px 36px #e6a81766;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .08s}
+#coin span{position:absolute;inset:8%;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#ffe99a,#e6a817 65%,#a87208);box-shadow:inset 0 0 0 3px #fff6,inset 0 -10px 18px #0004;color:#7a4e00;font:800 clamp(64px,20vw,98px)/1 "Iowan Old Style",Georgia,serif}
+#coin:active{transform:scale(.93)}
+.frz #coin{animation:pl .5s infinite alternate}@keyframes pl{to{box-shadow:0 0 54px 14px #ff8a00aa}}
+#fr{text-align:center;font-weight:800;color:#fff;background:#d9480f;border-radius:10px;padding:6px}
+.cl{text-align:center;margin:0 0 10px}.cl b{color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px 14px;margin-top:12px}
+.card p{margin:2px 0 8px;color:var(--mut);font-size:13px}
+.kv{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--line)}
+.wide,.ctl button,.tab,.modes button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px}
+.wide{width:100%;margin-top:10px;font-weight:700}.wide:not(:disabled){background:var(--btn);color:var(--btnt);border-color:transparent}.wide:disabled{opacity:.45}
+.ctl{display:flex;gap:8px;margin-top:10px}.ctl button{flex:1}
+.tabs{display:flex;gap:6px;margin-bottom:6px}.tab{flex:1;min-width:0;padding:8px 2px;font-size:13px;font-weight:700}
+.on{background:var(--btn)!important;color:var(--btnt)!important;border-color:transparent!important}
+.modes{display:flex;gap:6px;margin:8px 0}.modes button{flex:1;padding:6px}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:12px;padding:10px;margin:8px 0}
+.ic{font-size:28px;width:46px;height:46px;display:grid;place-items:center;background:var(--bg);border-radius:50%;flex:none}
+.inf{flex:1;min-width:0}.inf small{display:block;color:var(--mut);font-size:12px}
+em{font-style:normal;background:var(--bg);border-radius:8px;padding:1px 8px;font-size:12px;margin-left:6px}
+.bar{display:block;height:4px;border-radius:2px;background:var(--line);margin-top:6px;overflow:hidden}.bar u{display:block;height:100%;background:var(--gold)}
+.buy{display:flex;flex-direction:column;align-items:center;min-width:94px;border:0;border-radius:10px;padding:7px 10px;background:var(--btn);color:var(--btnt)}
+.buy span{font-size:11px;opacity:.75}.buy span+span{font-size:14px;font-weight:800;opacity:1}.buy:disabled{opacity:.35;cursor:not-allowed}
+.done{border-left-color:var(--ok)}.done .buy{background:var(--ok);color:#fff}.done .buy:disabled{opacity:.9}
+.ag{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.ach{text-align:center;padding:12px 4px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:24px;filter:grayscale(1);opacity:.4}.ach.got{filter:none;opacity:1}.ach small{display:block;font-size:11px;margin-top:2px}
+#gold{position:fixed;z-index:20;width:64px;height:64px;border-radius:50%;border:0;font-size:32px;background:radial-gradient(circle at 35% 30%,#fff3a8,#ffc400 65%,#b37a00);box-shadow:0 0 28px #ffc400;animation:fl 1s ease-in-out infinite alternate}@keyframes fl{to{transform:translateY(-12px) scale(1.08)}}
+.pop{position:fixed;z-index:15;pointer-events:none;font-weight:800;font-style:normal;color:var(--acc);text-shadow:0 1px 0 var(--bg);transform:translate(-50%,-50%);animation:up .9s ease-out forwards}@keyframes up{to{transform:translate(-50%,-190%);opacity:0}}
+#toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;display:grid;gap:6px;width:max-content;max-width:92vw}
+#toast div{background:var(--btn);color:var(--btnt);padding:9px 14px;border-radius:12px;font-weight:700;text-align:center}
+.lbn{display:flex;gap:8px;margin:8px 0}.lbn input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit}.lbn .wide{width:auto;margin:0}
+.lbl{margin:0;padding:0;list-style:none;counter-reset:r}.lbl li{counter-increment:r;display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0}.lbl li::before{content:counter(r);font-weight:800;color:var(--acc);min-width:1.6em}.lbl b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lbl .me{border:2px solid var(--gold)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="mrow"><div><small>Kasa</small><div id="m">₺0</div></div><div class="r"><div id="ps"></div><small id="rk"></small></div><button id="th" class="ib" aria-label="Temayı değiştir">◐</button></div></header>
+<main>
+<section class="left">
+<h1>Tycoon İmparatorluğu</h1>
+<div id="fr" hidden></div>
+<button id="coin" aria-label="Para kazan"><span>₺</span></button>
+<p class="cl">Tık başına <b id="cv"></b></p>
+<div class="card"><h3>Yeniden doğuş</h3><p>Her şeyi sıfırla, hisse kazan. Her hisse tüm gelire kalıcı +%10 ekler.</p><div class="kv"><span>Hisselerin</span><b id="hs"></b></div><div class="kv"><span>Şimdi alacağın</span><b id="pg"></b></div><button id="pb" class="wide"></button></div>
+<div class="card"><h3>İstatistikler</h3><div id="st"></div><div class="ctl"><button id="sv">Kaydet</button><button id="rs">Sıfırla</button></div></div>
+</section>
+<section class="right" id="app">
+<nav class="tabs"><button class="tab on">İşletmeler</button><button class="tab">Yükseltme</button><button class="tab">Başarım</button><button class="tab">🌍 Liderlik</button></nav>
+<div id="p0"></div><div id="p1" hidden></div><div id="p2" class="ag" hidden></div><div id="p3" hidden></div>
+</section>
+</main>
+<div id="toast"></div>
+<button id="gold" hidden aria-label="Altın jeton">🪙</button>
+<script>
+const $=s=>document.querySelector(s),sum=a=>a.reduce((x,y)=>x+y,0),R=1.15,
+SUF=["","K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"],
+B=[["Limonata Standı","🍋",15,.1],["Simit Arabası","🥯",100,.8],["Kafe","☕",1100,8],["Süpermarket","🛒",12e3,47],["Fabrika","🏭",130e3,260],["Banka","🏦",1.4e6,1400],["Yazılım Şirketi","💻",20e6,7800],["Uzay Madenciliği","🚀",330e6,44e3],["Zaman Makinesi","⏳",5.1e9,260e3]],
+K=[["Güçlü Parmak","👆",50,2],["Eldiven","🧤",500,2],["Çift Tık","✌️",5e3,2],["Robot Kol","🦾",5e4,3],["Altın Dokunuş","✨",5e6,5],["Kuantum Tık","⚛️",5e8,10]],
+G=[["Reklam Kampanyası","📣",1e3,.25],["Online Mağaza","🌐",5e4,.5],["Vergi Muafiyeti","📜",2e6,1],["Yapay Zekâ Asistanı","🤖",1e8,2],["Marka Ortaklığı","🤝",5e9,3],["Evrensel Marka","🌌",5e11,5]],
+MS=[10,25,50,100,150,200,300,400,500,750,1000],
+RK=[[0,"Çırak"],[1e3,"Esnaf"],[1e5,"Girişimci"],[1e6,"Milyoner"],[1e8,"Patron"],[1e10,"Milyarder"],[1e13,"Holding Başkanı"],[1e16,"İmparator"],[1e20,"Galaktik Tycoon"]];
+function fmt(n){let s;if(!(n>=0))n=0;if(n<1e3)s=n<10?""+ +n.toFixed(1):""+Math.floor(n);else{const i=Math.min(Math.floor(Math.log10(n)/3),11);s=(n/1e3**i).toFixed(2).replace(/\.?0+$/,"")+SUF[i]}return s.replace(".",",")}
+const M=n=>"₺"+fmt(n),T=(e,t)=>{t+="";if(e.textContent!=t)e.textContent=t},
+def=()=>({m:0,run:0,tot:0,cl:0,b:B.map(_=>0),k:K.map(_=>0),g:G.map(_=>0),h:0,pr:0,gd:0,ach:[],t:Date.now(),uid:Math.random().toString(36).slice(2,10)+Date.now().toString(36),name:"",best:0});
+let S=def(),fr=0,mode=1,arm=0,ra=0,gtm;
+try{Object.assign(S,JSON.parse(localStorage.getItem("tycoon_v1")||"{}"))}catch(e){}
+const ms=i=>2**MS.filter(x=>S.b[i]>=x).length,
+gm=()=>(1+sum(G.map((g,i)=>S.g[i]*g[3])))*(1+.1*S.h)*(1+.01*S.ach.length)*(Date.now()<fr?7:1),
+cps=()=>sum(B.map((b,i)=>b[3]*S.b[i]*ms(i)))*gm(),
+cv=()=>K.reduce((a,k,i)=>S.k[i]?a*k[3]:a,1)*gm()+cps()*.01*sum(S.k),
+bc=(i,n)=>B[i][2]*R**S.b[i]*(R**n-1)/(R-1),
+mx=i=>Math.max(0,Math.floor(Math.log(S.m*(R-1)/(B[i][2]*R**S.b[i])+1)/Math.log(R))),
+N=i=>mode||Math.max(1,mx(i)),pg=()=>Math.floor(Math.sqrt(S.run/1e8)),
+earn=x=>{S.m+=x;S.run+=x;S.tot+=x};
+const A=[];
+[10,100,1e3,1e4,1e5].forEach(n=>A.push([fmt(n)+" tık","👆",()=>S.cl>=n]));
+[1e3,1e6,1e9,1e12,1e15].forEach(n=>A.push([M(n)+" kazan","💰",()=>S.tot>=n]));
+[10,50,100,500,1e3].forEach(n=>A.push([fmt(n)+" işletme","🏢",()=>sum(S.b)>=n]));
+[1,5].forEach(n=>A.push([n+". yeniden doğuş","♻️",()=>S.pr>=n]));
+[1,10].forEach(n=>A.push([n+" altın jeton","🪙",()=>S.gd>=n]));
+const P0=$("#p0"),P1=$("#p1"),P2=$("#p2"),buyBtn='<button class="buy"><span></span><span></span></button>';
+P0.innerHTML='<div class="modes">'+[1,10,100,0].map(n=>`<button data-m="${n}" class="${n==1?"on":""}">${n?"×"+n:"Maks"}</button>`).join("")+"</div>"+B.map((b,i)=>`<div class="row" data-b="${i}"><div class="ic">${b[1]}</div><div class="inf"><b>${b[0]}<em></em></b><small></small><i class="bar"><u></u></i></div>${buyBtn}</div>`).join("");
+const urow=(t,a)=>a.map((k,i)=>`<div class="row" data-t="${t}" data-i="${i}"><div class="ic">${k[1]}</div><div class="inf"><b>${k[0]}</b><small>${t?"Tüm gelir +%"+k[3]*100:"Tık gücü ×"+k[3]+", her tık +%1 gelir"}</small></div>${buyBtn}</div>`).join("");
+P1.innerHTML="<h3>Tık gücü</h3>"+urow(0,K)+"<h3>Şirket geneli</h3>"+urow(1,G);
+P2.innerHTML=A.map(a=>`<div class="ach">${a[1]}<small>${a[0]}</small></div>`).join("");
+
+const LB_URL="https://api.npoint.io/4f7c98aa864fbffe7806";
+
+const lb=$("#p3");
+lb.innerHTML=`<p class="cl" id="lbs"></p><div class="lbn"><input id="lbname" maxlength="16" placeholder="Takma adın" aria-label="Takma ad"><button id="lbsend" class="wide">Skoru gönder</button></div><div id="lbl"></div>`;
+$("#lbname").value=S.name||"";
+
+async function lbSend(force){
+  if(!LB_URL.includes("api.npoint.io")||!S.name||(!force&&S.tot<=S.best))return false;
+  try{
+    const res=await fetch(LB_URL);
+    const data=await res.json();
+    let scores=data.scores||{};
+    scores[S.uid]={n:S.name,s:S.tot,h:S.h,t:Date.now()};
+    
+    const r=await fetch(LB_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({scores})});
+    if(r.ok)S.best=S.tot;
+    return r.ok;
+  }catch(e){return false}
+}
+
+async function lbLoad(){
+  const st=$("#lbs");
+  if(!LB_URL.includes("api.npoint.io")){T(st,"Skor tablosu bağlı değil.");return}
+  if(!$("#lbl").firstChild)T(st,"Yükleniyor…");
+  try{
+    const res=await fetch(LB_URL);
+    const data=await res.json();
+    const scoresObj=data.scores||{};
+    const a=Object.entries(scoresObj).map(([k,v])=>({k,n:String(v.n||"?").slice(0,16),s:+v.s||0,h:+v.h||0})).sort((x,y)=>y.s-x.s).slice(0,25);
+    
+    const ol=document.createElement("ol");
+    ol.className="lbl";
+    a.forEach(p=>{
+      const li=document.createElement("li"),n=document.createElement("b"),s=document.createElement("span");
+      if(p.k==S.uid)li.className="me";
+      n.textContent=p.n;
+      s.textContent=M(p.s)+(p.h?", "+p.h+" hisse":"");
+      li.append(n,s);
+      ol.append(li);
+    });
+    $("#lbl").replaceChildren(ol);
+    T(st,a.length?"Dünya genelinde en çok kazananlar":"Henüz kimse yok, ilk sen ol!");
+  }catch(e){T(st,"Skor tablosuna ulaşılamadı.")}
+}
+
+$("#lbsend").onclick=async()=>{
+  const n=$("#lbname").value.replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,16);
+  if(!n){toast("Önce bir takma ad yaz");return}
+  S.name=n;
+  if(!LB_URL.includes("api.npoint.io")){toast("Skor tablosu bağlı değil");return}
+  toast(await lbSend(true)?"🌍 Skor gönderildi":"Skor gönderilemedi");
+  lbLoad();
+};
+
+setInterval(lbSend,6e4);
+setInterval(()=>{if(!lb.hidden)lbLoad()},3e4);
+
+function pop(x,y,t){const e=document.createElement("i");e.className="pop";e.textContent=t;e.style.left=x+"px";e.style.top=y+"px";document.body.append(e);setTimeout(()=>e.remove(),900)}
+function toast(t){const e=document.createElement("div");e.textContent=t;$("#toast").append(e);setTimeout(()=>e.remove(),3500)}
+function hit(x,y){const v=cv();earn(v);S.cl++;pop(x,y,"+"+M(v))}
+const coin=$("#coin");
+coin.addEventListener("pointerdown",e=>{if(e.button>0)return;e.preventDefault();hit(e.clientX,e.clientY)});
+coin.addEventListener("keydown",e=>{if(e.key==" "||e.key=="Enter"){e.preventDefault();if(!e.repeat){const r=coin.getBoundingClientRect();hit(r.left+r.width/2,r.top+r.height/2)}}});
+function buyB(i){const n=N(i),c=bc(i,n);if(S.m>=c){S.m-=c;S.b[i]+=n}}
+function buyU(t,i){const a=t?G:K,s=t?S.g:S.k;if(!s[i]&&S.m>=a[i][2]){S.m-=a[i][2];s[i]=1}}
+$("#app").addEventListener("click",e=>{const m=e.target.closest("[data-m]");if(m){mode=+m.dataset.m;document.querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("on",x==m));return}const r=e.target.closest(".row");if(!r||!e.target.closest(".buy"))return;r.dataset.b!=null?buyB(+r.dataset.b):buyU(+r.dataset.t,+r.dataset.i)});
+document.querySelectorAll(".tab").forEach((b,i,a)=>b.onclick=()=>{a.forEach((x,j)=>x.classList.toggle("on",i==j));[0,1,2,3].forEach(j=>$("#p"+j).hidden=j!=i);if(i==3){lbSend();lbLoad()}});
+$("#th").onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark"};
+$("#pb").onclick=()=>{const g=pg();if(g<1)return;if(!arm){arm=1;setTimeout(()=>arm=0,4000);return}S.h+=g;S.pr++;S.m=S.run=0;S.b=B.map(_=>0);S.k=K.map(_=>0);S.g=G.map(_=>0);arm=0;fr=0;toast("♻️ Yeniden doğuş! +"+g+" hisse")};
+const save=()=>{try{S.t=Date.now();localStorage.setItem("tycoon_v1",JSON.stringify(S))}catch(e){}};
+$("#sv").onclick=()=>{save();toast("Kaydedildi")};
+$("#rs").onclick=function(){if(!ra){ra=1;this.textContent="Emin misin?";setTimeout(()=>{ra=0;this.textContent="Sıfırla"},3000);return}S=Object.assign(def(),{uid:S.uid,name:S.name,best:S.best});ra=0;fr=0;this.textContent="Sıfırla";save();toast("Oyun sıfırlandı")};
+setInterval(save,5000);addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>document.hidden&&save());
+const gd=$("#gold");
+function sched(){clearTimeout(gtm);gtm=setTimeout(()=>{gd.style.left=8+Math.random()*80+"%";gd.style.top=18+Math.random()*60+"%";gd.hidden=false;gtm=setTimeout(()=>{gd.hidden=true;sched()},12e3)},45e3+Math.random()*6e4)}
+gd.onclick=()=>{gd.hidden=true;S.gd++;if(Math.random()<.5){const g=Math.max(cps()*150,cv()*30);earn(g);toast("🪙 Bolluk! +"+M(g))}else{fr=Date.now()+2e4;toast("🔥 Çılgınlık! 20 sn boyunca gelir ×7")}sched()};
+function chk(){A.forEach((a,i)=>{if(!S.ach.includes(i)&&a[2]()){S.ach.push(i);toast("🏆 "+a[0]+" (+%1 gelir)")}})}
+function stats(){const kv=(a,b)=>`<div class="kv"><span>${a}</span><b>${b}</b></div>`;$("#st").innerHTML=kv("Toplam kazanç",M(S.tot))+kv("Bu turdaki kazanç",M(S.run))+kv("Toplam tık",fmt(S.cl))+kv("Altın jeton",S.gd)+kv("Başarım",S.ach.length+"/"+A.length)+kv("Toplam gelir çarpanı","×"+fmt(gm()))}
+function ui(){
+const c=cps(),f=fr-Date.now();
+T($("#m"),M(S.m));T($("#ps"),"+"+M(c)+"/sn");T($("#cv"),M(cv()));T($("#rk"),RK.filter(r=>S.tot>=r[0]).pop()[1]);
+$("#fr").hidden=f<=0;document.body.classList.toggle("frz",f>0);if(f>0)T($("#fr"),"🔥 Çılgınlık ×7: "+Math.ceil(f/1e3)+" sn");
+P0.querySelectorAll(".row").forEach((r,i)=>{const q=N(i),p=bc(i,q),o=S.b[i],x=MS.find(y=>y>o),l=MS.filter(y=>y<=o).pop()||0,[a,b]=r.querySelectorAll(".buy span");
+T(r.querySelector("em"),o);T(r.querySelector("small"),"Her biri "+M(B[i][3]*ms(i)*gm())+"/sn"+(x?", ×2 için "+x+" adet":", tam güç"));
+r.querySelector("u").style.width=(x?(o-l)/(x-l)*100:100)+"%";T(a,mode==1?"Satın al":"×"+q);T(b,M(p));r.querySelector(".buy").disabled=S.m<p});
+P1.querySelectorAll(".row").forEach(r=>{const t=+r.dataset.t,i=+r.dataset.i,u=t?G[i]:K[i],d=t?S.g[i]:S.k[i],[a,b]=r.querySelectorAll(".buy span");
+T(a,d?"✓":"Satın al");T(b,d?"Alındı":M(u[2]));r.classList.toggle("done",!!d);r.querySelector(".buy").disabled=!!d||S.m<u[2]});
+P2.querySelectorAll(".ach").forEach((e,i)=>e.classList.toggle("got",S.ach.includes(i)));
+const g=pg();T($("#hs"),S.h+" (+%"+S.h*10+")");T($("#pg"),"+"+g);T($("#pb"),arm?"Emin misin? Tekrar dokun":"♻️ Yeniden doğ");$("#pb").disabled=g<1}
+{const a=(Date.now()-S.t)/1e3;if(S.tot>0&&a>60){const g=Math.min(a,28800)*cps()*.5;earn(g);setTimeout(()=>toast("😴 Yokken "+M(g)+" kazandın"),500)}}
+let last=Date.now(),ac=0;
+setInterval(()=>{const n=Date.now(),dt=Math.min((n-last)/1e3,3600);last=n;earn(cps()*dt);if((ac+=dt)>.5){ac=0;chk();stats()}ui()},100);
+chk();stats();ui();sched();
+</script>
+</body>
+</html>
